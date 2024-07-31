@@ -40,16 +40,16 @@ class CtaButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: isLoading || !isEnable ? null : onPressed,
       style: ButtonStyle(
-          elevation: MaterialStateProperty.all(0),
+          elevation: WidgetStateProperty.all(0),
           foregroundColor:
-              MaterialStateProperty.all(foregroundColor ?? Colors.white),
-          backgroundColor: MaterialStateProperty.all(
+              WidgetStateProperty.all(foregroundColor ?? Colors.white),
+          backgroundColor: WidgetStateProperty.all(
               isEnable ? backgroundColor : AppColor.midGrey),
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+          shape: WidgetStateProperty.all(RoundedRectangleBorder(
               side: borderColor == null
                   ? BorderSide.none
                   : BorderSide(color: borderColor!),
-              borderRadius: BorderRadius.circular(AppSpace.radius)))),
+              borderRadius: BorderRadius.circular(context.appSpace.radius)))),
       child: Padding(
         padding: paddingEdge ?? EdgeInsets.all(padding),
         child: Stack(
@@ -114,7 +114,7 @@ class AutoLoadingCtaButton extends StatefulWidget {
     this.backgroundColor = AppColor.primaryColor,
     this.foregroundColor,
     this.icon,
-    this.padding = AppSpace.medium,
+    this.padding = 8,
     this.child,
     this.reversIcon = false,
     this.borderColor,

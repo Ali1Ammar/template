@@ -8,21 +8,21 @@
       "name": "starter",
       "request": "launch",
       "type": "dart",
-      "args": ["--dart-define-from-file", "lib/env/.dev.json"]
+      "args": ["--dart-define-from-file", "lib/env/.dev.env"]
     },
     {
       "name": "starter (profile mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile",
-      "args": ["--dart-define-from-file", "lib/env/.dev.json"]
+      "args": ["--dart-define-from-file", "lib/env/.dev.env"]
     },
     {
       "name": "starter (release mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release",
-      "args": ["--dart-define-from-file", "lib/env/.prod.json"]
+      "args": ["--dart-define-from-file", "lib/env/.prod.env"]
     }
   ]
 }

@@ -1,0 +1,28 @@
+.PHONY: build list
+
+all:
+# flutter helper
+build:
+	flutter pub run build_runner build
+
+buildd:
+	flutter pub run build_runner build --delete-conflicting-outputs
+
+icons:
+	flutter pub run flutter_native_splash:create
+	flutter pub run flutter_launcher_icons     
+
+apk-debug:
+	flutter build apk --dart-define-from-file lib/env/debug.env
+
+apk-prod:
+	flutter build apk --dart-define-from-file lib/env/prod.env
+
+appbundle-prod:
+	flutter build appbundle --dart-define-from-file lib/env/prod.env
+
+ipa-prod:
+	flutter build ipa --dart-define-from-file lib/env/prod.env
+
+ipa-debug:
+	flutter build ipa --dart-define-from-file lib/env/debug.env --export-method development

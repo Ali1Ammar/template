@@ -8,7 +8,7 @@ class AuthClient {
 
   AuthClient({required this.dio});
 
-  ResponseT<Null> login(LoginRequest data) async {
+  Future<Null> login(LoginRequest data) async {
     return apiGuard(
       () async {
         await dio.post(

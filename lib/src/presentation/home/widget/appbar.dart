@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:starter/src/core/design/animation/animated_hide.dart';
-import 'package:starter/src/core/design/theme/space.dart';
+import 'package:starter/src/core/design/theme/theme.dart';
 import 'package:starter/src/core/design/widget/logo.dart';
 import 'package:starter/src/core/utils/extensions/context.dart';
 
@@ -30,9 +30,9 @@ class CustomHomeAppbar extends StatelessWidget {
         pinned: false,
         floating: false,
         elevation: 10,
-        shape: const RoundedRectangleBorder(
+        shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(AppSpace.radius))),
+                bottom: Radius.circular(context.appSpace.radius))),
         leading: AnimatedHide(
           show: !context.isTablet(),
           child: const Padding(

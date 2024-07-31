@@ -1,10 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:starter/src/core/failure/base.dart';
-import 'package:starter/src/infrastructure/dto/response/paginate_response.dart';
 
 extension OnDioException on DioException {
-  ApiFailure toFailure() {
+  BaseFailure toFailure() {
     switch (type) {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
@@ -13,9 +11,8 @@ extension OnDioException on DioException {
       case DioExceptionType.unknown:
       case DioExceptionType.cancel:
       case DioExceptionType.connectionError:
-        return ConnectionFailure();
       case DioExceptionType.badResponse:
-        return DioFailure(this);
+        return ConnectionFailure();
     }
   }
 }
@@ -26,34 +23,38 @@ extension OnRequestOptions on RequestOptions {
       method: method,
       headers: headers,
     );
-    return dio.request<T>(path,
-        data: data, queryParameters: queryParameters, options: options);
+    return dio.request<T>(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+    );
   }
 }
-
-typedef PaginatedResponseT<T> = ResponseT<PaginateResponse<T>>;
-
-typedef ResponseT<T> = Future<Either<BaseFailure, T>>;
 
 // this function is used to handle any api call error and record unknown error
 // it is better to handle any known error and convert it into failure here before passing it to the next layer
 // if either customDioException or customException result is null then the error will be recorded as unknown error
-ResponseT<T> apiGuard<T>(Future<T> Function() apiCall,
-    {ApiFailure? Function(DioException error)? customDioException,
-    BaseFailure? Function(Object error)? customException}) async {
+Future<T> apiGuard<T>(
+  Future<T> Function() apiCall, {
+  ApiFailure? Function(DioException error)? customDioException,
+  BaseFailure? Function(Object error)? customException,
+}) async {
   try {
-    return Right(await apiCall());
+    return await apiCall();
   } on DioException catch (e) {
     final failure = customDioException?.call(e);
     if (failure != null) {
-      return Left(failure);
+      throw failure;
     }
-    return Left(e.toFailure());
+
+    throw e.toFailure();
   } catch (e) {
     final failure = customException?.call(e);
     if (failure != null) {
-      return Left(failure);
+      throw failure;
     }
-    return Left(UnknownFailure(e));
+    if (e is BaseFailure) rethrow;
+    throw UnknownFailure(e);
   }
 }

@@ -27,8 +27,8 @@ extension _ThemeDataHelper on ThemeData {
   ThemeData sharedCopyWith() {
     return copyWith(
       appBarTheme: AppBarTheme(
-        backgroundColor: colorScheme.background,
-        foregroundColor: colorScheme.onBackground,
+        backgroundColor: colorScheme.surface,
+        foregroundColor: colorScheme.onSurface,
         elevation: 2,
       ),
       inputDecorationTheme: inputDecoration(),
@@ -36,8 +36,8 @@ extension _ThemeDataHelper on ThemeData {
   }
 
   InputDecorationTheme inputDecoration() {
-    const outlined = OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(AppSpace.radius)));
+    const outlined =
+        OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8)));
     return InputDecorationTheme(
       border: outlined.copyWith(borderSide: BorderSide.none),
       enabledBorder: outlined.copyWith(borderSide: BorderSide.none),

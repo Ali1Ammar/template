@@ -1,17 +1,32 @@
-import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:flutter/material.dart';
 
 class AnimatedHide extends StatelessWidget {
+  const AnimatedHide({
+    required this.show,
+    required this.child,
+    super.key,
+    this.axis,
+    this.size,
+  });
   final bool show;
   final Widget child;
-
-  const AnimatedHide({super.key, required this.show, required this.child});
+  final Axis? axis;
+  final Size? size;
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSizeAndFade.showHide(
-      show: show,
-      child: child,
+    return AnimatedCrossFade(
+      duration: const Duration(milliseconds: 300),
+      firstChild: child,
+      secondChild: switch (axis) {
+        Axis.horizontal => const SizedBox(height: double.maxFinite),
+        Axis.vertical => const SizedBox(width: double.maxFinite),
+        null => SizedBox.fromSize(
+            size: size,
+          ),
+      },
+      crossFadeState:
+          show ? CrossFadeState.showFirst : CrossFadeState.showSecond,
     );
   }
 }
