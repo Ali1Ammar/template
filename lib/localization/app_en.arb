@@ -9,5 +9,6 @@
   "enterEmailOrUsername": "Enter Email/Username",
   "enterPassword": "Enter Password",
   "loginTitle": "Log in",
-  "rememberMe": "Remember Me"
+  "rememberMe": "Remember Me",
+  "gitDoNotChange": "ADD Above this line only,this is used to minimize the git conflicts"
 }
