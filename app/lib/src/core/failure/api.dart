@@ -13,7 +13,7 @@ class DioFailure implements ApiFailure {
 
   @override
   translate(Translations localizations) {
-    return localizations.validator.unknownError;
+    return localizations.failure.network;
   }
 }
 
@@ -22,50 +22,6 @@ class ConnectionFailure implements ApiFailure {
 
   @override
   translate(Translations localizations) {
-    return localizations.validator.connectionError;
-  }
-}
-
-class InvalidCredentialFailure implements ApiFailure {
-  const InvalidCredentialFailure();
-
-  @override
-  translate(Translations localizations) {
-    return localizations.validator.invalidCredentials;
-  }
-}
-
-class TakenEmailFailure implements ApiFailure {
-  const TakenEmailFailure();
-
-  @override
-  translate(Translations localizations) {
-    return localizations.validator.usedEmail;
-  }
-}
-
-class FailedRefreshTokenFailure implements ApiFailure {
-  const FailedRefreshTokenFailure();
-
-  @override
-  translate(Translations localizations) {
-    return localizations.validator.invalidCredentials;
-  }
-}
-
-//TODO(init): this must be change based on the app backend and used inside error inspector
-class KnownApiFailure implements ApiFailure {
-  final int? errorCode;
-  final String? type;
-  final String? service;
-  final String? requestId;
-  final List? details;
-  final String? title;
-  const KnownApiFailure(this.errorCode, this.type, this.service, this.requestId,
-      this.details, this.title);
-
-  @override
-  translate(Translations localizations) {
-    return title ?? localizations.validator.unknownError;
+    return localizations.failure.network;
   }
 }

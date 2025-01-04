@@ -19,6 +19,6 @@ class UnknownFailure implements BaseFailure {
 
   @override
   translate(Translations localizations) {
-    return localizations.validator.unknownError;
+    return localizations.failure.unknown;
   }
 }

@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         restorationScopeId: 'app',
 
-        onGenerateTitle: (BuildContext context) => context.translator.appTitle,
+        onGenerateTitle: (BuildContext context) => context.translator.appName,
         //route
         routerConfig: appRouter.config(
             // reevaluateListenable: loggedInController,

@@ -1,0 +1,5 @@
+base_locale: ar
+input_directory: lib/localization
+input_file_pattern: .json
+timestamp: false
+statistics: false
