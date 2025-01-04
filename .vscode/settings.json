@@ -40,5 +40,24 @@
   "widgetbook-generator.barrelFileImport": "package:app/widgetbook_helper.dart",
   "widgetbook-generator.rootDirectoryName": "app",
   "widgetbook-generator.widgetbookVersion": "Latest", // must be supported by the extension
-  "widgetbook-generator.approach": "Generation"
+  "widgetbook-generator.approach": "Generation",
+  "favorites.resources": [
+    {
+      "filePath": "app/lib",
+      "group": "Default"
+    },
+    {
+      "filePath": "app/lib/src",
+      "group": "Default"
+    },
+    {
+      "filePath": "widgetbook/lib/usecase",
+      "group": "Default"
+    },
+    {
+      "filePath": "assets",
+      "group": "Default"
+    }
+  ],
+  "favorites.sortOrder": "DESC"
 }
