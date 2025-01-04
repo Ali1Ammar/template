@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 final sharedPreferenceProvider =
     FutureProvider((ref) => SharedPreferences.getInstance());
 
-final localStorageProvider = Provider<LocalStorageService>((ref) =>
-    LocalStorageService(
-        sharedPreferences: ref.read(sharedPreferenceProvider).requireValue));
+final localStorageProvider = Provider<LocalStorageService>(
+  (ref) => LocalStorageService(
+    sharedPreferences: ref.read(sharedPreferenceProvider).requireValue,
+  ),
+);

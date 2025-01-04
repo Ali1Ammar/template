@@ -10,18 +10,21 @@ import 'package:talker_riverpod_logger/talker_riverpod_logger.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(TranslationProvider(
-    child: ProviderScope(
-      observers: [
-        TalkerRiverpodObserver(
+  runApp(
+    TranslationProvider(
+      child: ProviderScope(
+        observers: [
+          TalkerRiverpodObserver(
             talker: logger,
             settings: const TalkerRiverpodLoggerSettings(
               printStateFullData: false,
               printFailFullData: false,
               // printProviderUpdated: false,
-            ))
-      ],
-      child: AppStartupMangeWidget(startupProvider, (_) => const MyApp()),
+            ),
+          ),
+        ],
+        child: AppStartupMangeWidget(startupProvider, (_) => const MyApp()),
+      ),
     ),
-  ));
+  );
 }

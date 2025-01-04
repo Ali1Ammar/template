@@ -1,0 +1,6 @@
+targets:
+  $default:
+    builders:
+      auto_route_generator:auto_route_generator:
+        generate_for:
+          - lib/src/presentation/**/**_page.dart
