@@ -1,8 +1,11 @@
+import 'package:design/theme/custom_theme.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {
   static ThemeData lightTheme() {
-    return ThemeData.light().sharedCopyWith();
+    return ThemeData.light().sharedCopyWith().copyWith(
+      extensions: [AppCustomTheme(background: Colors.white)],
+    );
   }
 }
 
@@ -14,9 +17,7 @@ extension _ThemeDataHelper on ThemeData {
   ThemeData copyWithTextTheme() {
     const arFont = '';
     const fallback = [''];
-    final typography = Typography.material2021(
-      colorScheme: colorScheme,
-    );
+    final typography = Typography.material2021(colorScheme: colorScheme);
     return copyWith(
       textTheme: textTheme.apply(
         fontFamily: arFont,

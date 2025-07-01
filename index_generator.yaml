@@ -1,12 +1,13 @@
 index_generator:
   exclude:
-    - "**.g.dart"
-    - "**.freezed.dart"
-    - "**.gr.dart"
-    - "**.tailor.dart"
-    - "**.part.dart"
+    - '**.g.dart'
+    - '{_,**/_}*.dart'
 
   # Define the paths of the folders in which to generate the index files
-  indexes:
-    - path: app/lib
-      name: widgetbook_helper
+  libraries:
+    - directory_path: app/lib
+      file_name: barrel.g
+      docs: | 
+        Automatically generate index files
+        to be used by other library like widgetbook
+        do not import or use this in the same app

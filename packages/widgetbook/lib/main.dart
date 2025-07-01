@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
-import 'package:app/widgetbook_helper.dart';
 import 'package:widgetbook_workspace/addon/wrapper.dart';
+import 'package:design/design.dart';
 // This file does not exist yet,
 // it will be generated in the next step
 import 'main.directories.g.dart';

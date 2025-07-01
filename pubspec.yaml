@@ -1,8 +1,9 @@
-name: _
+name: sajaj
 publish_to: none
 environment:
   sdk: ^3.6.0
 workspace:
   - app
-  - widgetbook
-  - assets
+  - packages/widgetbook
+  - packages/assets
+  - packages/design

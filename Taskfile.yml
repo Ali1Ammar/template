@@ -1,0 +1,159 @@
+version: '3'
+
+vars:
+  ENVIRONMENTS: ['staging', 'rc', 'prod']
+  WIDGETBOOK_API_KEY: ''
+
+tasks:
+
+  build-all:
+    desc: Build app, assets, and widgetbook
+    deps: [build-app, build-assets, build-widgetbook, build-design  ]
+
+  build-app:
+    desc: Build app with build_runner and slang
+    dir: app
+    cmds:
+      - dart run build_runner build -d
+  build-design:
+    desc: Build design with build_runner
+    dir: packages/design
+    cmds:
+      - dart run build_runner build -d
+
+  build-lang:
+    desc: Run slang for localization
+    dir: app
+    cmds:
+      - dart run slang
+
+  build-assets:
+    desc: Build assets with build_runner
+    dir: assets
+    cmds:
+      - cmd: rm -rf lib/gen
+        platforms: [darwin, linux]
+      - cmd: del "lib/gen"
+        platforms: [windows]
+      - dart run build_runner build -d
+
+
+  build-widgetbook:
+    desc: Build widgetbook
+    cmds:
+      - dart pub global run index_generator
+
+  upload-widgetbook:
+    desc: Upload widgetbook to cloud
+    dir: widgetbook
+    cmds:
+      - flutter build web
+      - widgetbook cloud build push --api-key {{.WIDGETBOOK_API_KEY}}
+
+  # Environment-specific APK builds
+  apk-staging:
+    desc: Build APK for staging environment
+    dir: app
+    cmds:
+      - flutter build apk --dart-define-from-file lib/env/.staging.env
+
+  apk-staging-debug:
+    desc: Build debug APK for staging environment
+    dir: app
+    cmds:
+      - flutter build apk --dart-define-from-file lib/env/.staging.env --debug
+
+  apk-rc:
+    desc: Build APK for RC environment
+    dir: app
+    cmds:
+      - flutter build apk --dart-define-from-file lib/env/.rc.env
+
+  apk-rc-debug:
+    desc: Build debug APK for RC environment
+    dir: app
+    cmds:
+      - flutter build apk --dart-define-from-file lib/env/.rc.env --debug
+
+  apk-prod:
+    desc: Build APK for production environment
+    dir: app
+    cmds:
+      - flutter build apk --dart-define-from-file lib/env/.prod.env
+
+  apk-prod-debug:
+    desc: Build debug APK for production environment
+    dir: app
+    cmds:
+      - flutter build apk --dart-define-from-file lib/env/.prod.env --debug
+
+  # Environment-specific App Bundle builds
+  appbundle-staging:
+    desc: Build App Bundle for staging environment
+    dir: app
+    cmds:
+      - flutter build appbundle --dart-define-from-file lib/env/.staging.env
+
+  appbundle-rc:
+    desc: Build App Bundle for RC environment
+    dir: app
+    cmds:
+      - flutter build appbundle --dart-define-from-file lib/env/.rc.env
+
+  appbundle-prod:
+    desc: Build App Bundle for production environment
+    dir: app
+    cmds:
+      - flutter build appbundle --dart-define-from-file lib/env/.prod.env
+
+  # Environment-specific IPA builds
+  ipa-staging:
+    desc: Build IPA for staging environment
+    dir: app
+    cmds:
+      - flutter build ipa --dart-define-from-file lib/env/.staging.env --export-method development
+
+  ipa-rc:
+    desc: Build IPA for RC environment
+    dir: app
+    cmds:
+      - flutter build ipa --dart-define-from-file lib/env/.rc.env --export-method development
+
+  ipa-prod:
+    desc: Build IPA for production environment
+    dir: app
+    cmds:
+      - flutter build ipa --dart-define-from-file lib/env/.prod.env --export-method development
+
+  ipa-prod-release:
+    desc: Build release IPA for production environment
+    dir: app
+    cmds:
+      - flutter build ipa --dart-define-from-file lib/env/.prod_release.env
+
+  # Helper tasks for all environments
+  apk-all:
+    desc: Build APK for all environments
+    deps: [apk-staging, apk-rc, apk-prod]
+
+  appbundle-all:
+    desc: Build App Bundle for all environments
+    deps: [appbundle-staging, appbundle-rc, appbundle-prod]
+
+  ipa-all:
+    desc: Build IPA for all environments
+    deps: [ipa-staging, ipa-rc, ipa-prod]
+
+  # Clean tasks
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - cd app && flutter clean
+      - cd assets && rm -rf lib/gen
+      - cd widgetbook && flutter clean
+
+  clean-all:
+    desc: Clean all projects
+    deps: [clean]
+    cmds:
+      - flutter clean

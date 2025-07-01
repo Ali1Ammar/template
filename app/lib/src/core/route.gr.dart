@@ -1,3 +1,4 @@
+// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
@@ -13,10 +14,7 @@ part of 'route.dart';
 /// [OnboardingPage]
 class OnboardingPageRoute extends PageRouteInfo<void> {
   const OnboardingPageRoute({List<PageRouteInfo>? children})
-      : super(
-          OnboardingPageRoute.name,
-          initialChildren: children,
-        );
+      : super(OnboardingPageRoute.name, initialChildren: children);
 
   static const String name = 'OnboardingPageRoute';
 

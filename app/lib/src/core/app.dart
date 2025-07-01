@@ -1,11 +1,11 @@
 import 'package:app/src/core/utils/localization.dart';
 import 'package:app/src/core/route.dart';
 import 'package:app/src/core/utils/log.dart';
-import 'package:app/src/design/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+import 'package:design/design.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({

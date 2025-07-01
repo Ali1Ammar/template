@@ -12,7 +12,7 @@ class DioFailure implements ApiFailure {
   DioFailure(this.error);
 
   @override
-  translate(Translations localizations) {
+  String translate(Translations localizations) {
     return localizations.failure.network;
   }
 }
@@ -21,7 +21,7 @@ class ConnectionFailure implements ApiFailure {
   ConnectionFailure();
 
   @override
-  translate(Translations localizations) {
+  String translate(Translations localizations) {
     return localizations.failure.network;
   }
 }

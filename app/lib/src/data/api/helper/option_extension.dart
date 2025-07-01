@@ -1,12 +1,12 @@
 import 'package:dio/dio.dart';
 
 extension OptionExtension on Options {
-  disableToken() {
+  void disableToken() {
     extra ??= {};
     extra!['disable-token'] = true;
   }
 
-  setRefreshToken() {
+  void setRefreshToken() {
     extra ??= {};
     extra!['refresh-token'] = true;
   }

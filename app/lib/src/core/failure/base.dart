@@ -10,7 +10,7 @@ sealed class LogicFailure implements BaseFailure {
   LogicFailure();
 
   @override
-  translate(Translations localizations);
+  String translate(Translations localizations);
 }
 
 class UnknownFailure implements BaseFailure {
@@ -18,7 +18,7 @@ class UnknownFailure implements BaseFailure {
   UnknownFailure(this.error);
 
   @override
-  translate(Translations localizations) {
+  String translate(Translations localizations) {
     return localizations.failure.unknown;
   }
 }

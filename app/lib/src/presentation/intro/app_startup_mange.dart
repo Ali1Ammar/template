@@ -1,9 +1,10 @@
+import 'package:app/src/presentation/intro/app_startup_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'app_startup_animation.dart';
+// import 'app_startup_animation.dart';
 import 'intro_page.dart';
 
 class AppStartupMangeWidget extends HookConsumerWidget {

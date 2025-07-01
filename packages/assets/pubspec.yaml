@@ -18,8 +18,7 @@ dev_dependencies:
 
 flutter:
   assets:
-    - image/
-    - svg/
+    - images/
 
 flutter_gen:
   integrations:

@@ -1,6 +1,10 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-
-library widgetbook_helper;
+// ignore_for_file: type=lint
+// ignore_for_file: unused_import, prefer_relative_imports, directives_ordering
+/// Automatically generate index files
+/// to be used by other library like widgetbook
+/// do not import or use this in the same app
+library;
 
 export 'env/env.dart';
 export 'env/helper.dart';
@@ -15,6 +19,7 @@ export 'src/core/provider/secure_storage.dart';
 export 'src/core/provider/startup.dart';
 export 'src/core/provider/storage.dart';
 export 'src/core/route.dart';
+export 'src/core/route.gr.dart';
 export 'src/core/utils/localization.dart';
 export 'src/core/utils/log.dart';
 export 'src/core/validator/validator.dart';
@@ -23,15 +28,7 @@ export 'src/data/api/helper/helper.dart';
 export 'src/data/api/helper/option_extension.dart';
 export 'src/data/local/local_storage_service.dart';
 export 'src/data/local/secure_storage_service.dart';
-export 'src/design/animation/animated_hide.dart';
-export 'src/design/animation/expandable.dart';
-export 'src/design/animation/page_transitions.dart';
-export 'src/design/extension/color.dart';
-export 'src/design/extension/context_extension.dart';
-export 'src/design/theme/app_space.dart';
-export 'src/design/theme/app_theme.dart';
-export 'src/design/theme/theme.dart';
-export 'src/design/widget/app_logo.dart';
 export 'src/presentation/intro/app_startup_animation.dart';
 export 'src/presentation/intro/app_startup_mange.dart';
 export 'src/presentation/intro/intro_page.dart';
+export 'src/presentation/onboarding/page/onboarding_page.dart';

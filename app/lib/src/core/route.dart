@@ -20,9 +20,9 @@ class AppRouter extends RootStackRouter {
   ];
 
   @override
-  RouteType get defaultRouteType => const RouteType.custom(
+  RouteType get defaultRouteType => RouteType.custom(
         transitionsBuilder: TransitionsBuilders.fadeIn,
-        durationInMilliseconds: 300,
-        reverseDurationInMilliseconds: 300,
+        duration: const Duration(milliseconds: 300),
+        reverseDuration: const Duration(milliseconds: 300),
       );
 }

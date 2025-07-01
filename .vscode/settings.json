@@ -7,7 +7,8 @@
     "fpdart",
     "mocktail",
     "Pinput",
-    "riverpod"
+    "riverpod",
+    "widgetbook"
   ],
   "cSpell.ignorePaths": [
     "package-lock.json",
@@ -28,36 +29,16 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit"
   },
-
   "explorer.fileNesting.patterns": {
-    "pubspec.yaml": ".flutter-plugins, .packages, .dart_tool, .flutter-plugins-dependencies, .metadata, .packages, pubspec.lock,all_lint_rules.yaml,custom_lint.log,l10n.yaml,ftth_pos.iml,analysis_options.yaml,build.yaml,build.*.yaml,slang.yaml,index_generator.yaml",
+    "pubspec.yaml": ".flutter-plugins, .packages, .dart_tool, .flutter-plugins-dependencies, .metadata, .packages, pubspec.lock,all_lint_rules.yaml,custom_lint.log,l10n.yaml,analysis_options.yaml,build.yaml,build.*.yaml,slang.yaml,index_generator.yaml",
     ".gitignore": ".gitattributes, .gitmodules, .gitmessage, .mailmap, .git-blame*",
     "readme.*": "authors, backers.md, changelog*, citation*, code_of_conduct.md, codeowners, contributing.md, contributors, copying, credits, governance.md, history.md, license*, maintainers, readme*, security.md, sponsors.md",
-    "*.dart": "$(capture).g.dart, $(capture).freezed.dart, $(capture).gr.dart, $(capture).mapper.dart"
+    "*.dart": "$(capture).g.dart, $(capture).freezed.dart, $(capture).gr.dart, $(capture).mapper.dart, $(capture).tailor.dart"
   },
 
   "widgetbook-generator.widgetsDirectoryPath": "../widgetbook/lib/usecase",
   "widgetbook-generator.barrelFileImport": "package:app/widgetbook_helper.dart",
   "widgetbook-generator.rootDirectoryName": "app",
   "widgetbook-generator.widgetbookVersion": "Latest", // must be supported by the extension
-  "widgetbook-generator.approach": "Generation",
-  "favorites.resources": [
-    {
-      "filePath": "app/lib",
-      "group": "Default"
-    },
-    {
-      "filePath": "app/lib/src",
-      "group": "Default"
-    },
-    {
-      "filePath": "widgetbook/lib/usecase",
-      "group": "Default"
-    },
-    {
-      "filePath": "assets",
-      "group": "Default"
-    }
-  ],
-  "favorites.sortOrder": "DESC"
+  "widgetbook-generator.approach": "Generation"
 }
