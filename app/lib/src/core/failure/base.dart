@@ -1,9 +1,14 @@
 import 'package:app/localization/strings.g.dart';
+import 'package:meta/meta.dart';
 
 abstract class BaseFailure {
   BaseFailure();
 
   String translate(Translations localizations);
+
+  @override
+  @mustBeOverridden
+  String toString();
 }
 
 sealed class LogicFailure implements BaseFailure {
@@ -20,5 +25,10 @@ class UnknownFailure implements BaseFailure {
   @override
   String translate(Translations localizations) {
     return localizations.failure.unknown;
+  }
+
+  @override
+  String toString() {
+    return 'UnknownFailure: $error';
   }
 }

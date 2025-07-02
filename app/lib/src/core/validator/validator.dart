@@ -1,5 +1,5 @@
-import '../utils/localization.dart';
-import '../failure/base.dart';
+import 'package:app/localization/strings.g.dart';
+import 'package:app/src/core/failure/base.dart';
 
 abstract class ValidatorFailure<T> implements BaseFailure {
   const ValidatorFailure();

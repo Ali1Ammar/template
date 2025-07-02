@@ -1,5 +1,5 @@
-import 'package:app/src/core/utils/localization.dart';
-import 'package:app/src/core/route.dart';
+import 'package:app/localization/strings.g.dart';
+import 'package:app/src/core/route/route.dart';
 import 'package:app/src/core/utils/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           restorationScopeId: 'app',
 
-          onGenerateTitle: (BuildContext context) => context.translator.appName,
+          onGenerateTitle: (BuildContext context) => context.t.appName,
           //route
           routerConfig: appRouter.config(
             // reevaluateListenable: loggedInController,

@@ -1,5 +1,5 @@
+import 'package:app/localization/strings.g.dart';
 import 'package:app/src/core/app.dart';
-import 'package:app/src/core/utils/localization.dart';
 import 'package:app/src/core/provider/startup.dart';
 import 'package:app/src/core/utils/log.dart';
 import 'package:app/src/presentation/intro/app_startup_mange.dart';

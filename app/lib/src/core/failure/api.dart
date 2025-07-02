@@ -1,5 +1,5 @@
+import 'package:app/localization/strings.g.dart';
 import 'package:app/src/core/failure/base.dart';
-import 'package:app/src/core/utils/localization.dart';
 import 'package:dio/dio.dart';
 
 sealed class ApiFailure implements BaseFailure {
@@ -15,6 +15,11 @@ class DioFailure implements ApiFailure {
   String translate(Translations localizations) {
     return localizations.failure.network;
   }
+
+  @override
+  String toString() {
+    return 'DioFailure($error)';
+  }
 }
 
 class ConnectionFailure implements ApiFailure {
@@ -23,5 +28,10 @@ class ConnectionFailure implements ApiFailure {
   @override
   String translate(Translations localizations) {
     return localizations.failure.network;
+  }
+
+  @override
+  String toString() {
+    return 'ConnectionFailure()';
   }
 }
