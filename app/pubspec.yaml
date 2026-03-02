@@ -22,9 +22,11 @@ dependencies:
   auto_route: ^10.1.0+1
   dio: ^5.7.0
 
-
   design:
     path: ../packages/design
+
+  odoo_api:
+    path: ../packages/odoo_api
 
   # storage
   flutter_secure_storage: ^9.2.3
@@ -37,7 +39,7 @@ dependencies:
   # state
   riverpod: ^3.0.0-dev.16
   flutter_riverpod:
-  hooks_riverpod: 
+  hooks_riverpod:
   flutter_hooks: ^0.21.2
 
   # logging
@@ -48,7 +50,7 @@ dependencies:
   # localization
   slang: ^4.4.1
   slang_flutter: ^4.4.0
-  intl: 
+  intl:
 
   # utils
   jwt_decoder: ^2.0.1

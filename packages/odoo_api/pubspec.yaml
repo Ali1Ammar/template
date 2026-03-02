@@ -2,7 +2,7 @@ name: odoo_api
 description: A starting point for Dart libraries or applications.
 version: 1.0.0
 # repository: https://github.com/my_org/my_repo
-
+resolution: workspace
 environment:
   sdk: ^3.11.0
 

@@ -1,8 +1,6 @@
-import 'package:app/src/core/provider/dio.dart';
-import 'package:app/src/data/api/auth_client.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:odoo_api/odoo_api.dart';
 
 final apiServiceProvider = Provider((ref) {
-  final dio = ref.read(dioClient);
-  return (authClient: AuthClient(dio));
+  return (authClient: Odoo.create());
 });

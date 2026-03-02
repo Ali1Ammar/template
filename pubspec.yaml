@@ -7,3 +7,4 @@ workspace:
   - packages/widgetbook
   - packages/assets
   - packages/design
+  - packages/odoo_api
