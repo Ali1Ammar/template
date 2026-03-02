@@ -1,14 +1,21 @@
-version: '3'
+version: "3"
 
 vars:
-  ENVIRONMENTS: ['staging', 'rc', 'prod']
-  WIDGETBOOK_API_KEY: ''
+  ENVIRONMENTS: ["staging", "rc", "prod"]
+  WIDGETBOOK_API_KEY: ""
 
 tasks:
-
   build-all:
     desc: Build app, assets, and widgetbook
-    deps: [build-app, build-assets, build-widgetbook, build-design  ]
+    deps:
+      [build-app, build-assets, build-widgetbook, build-design, build-odoo-api]
+
+  build-odoo-api:
+    desc: Convert OpenAPI YAML to JSON and build odoo_api
+    dir: packages/odoo_api
+    cmds:
+      - ruby -ryaml -rjson -e 'puts JSON.pretty_generate(YAML.load(ARGF))' < lib/swaggers/odoo.yaml > lib/swaggers/odoo.json
+      - dart run build_runner build -d
 
   build-app:
     desc: Build app with build_runner and slang
@@ -36,7 +43,6 @@ tasks:
       - cmd: del "lib/gen"
         platforms: [windows]
       - dart run build_runner build -d
-
 
   build-widgetbook:
     desc: Build widgetbook

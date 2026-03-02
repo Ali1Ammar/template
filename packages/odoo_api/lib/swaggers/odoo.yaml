@@ -1,0 +1,1045 @@
+openapi: "3.0.3"
+info:
+  title: "HR Portal API (Mobile)"
+  version: "1.0.0"
+  description: >
+    REST API for HR mobile app (Portal users).
+    Unified envelope:
+      - Success: {ok:true, data:{...}, meta:{...}}
+      - Error:   {ok:false, error:{code,message}, data:{}}
+
+servers:
+  - url: "http://37.238.97.71:8392"
+
+tags:
+  - name: Docs
+  - name: Auth
+  - name: Profile
+  - name: Attendance
+  - name: Leaves
+  - name: Payslips
+  - name: Approvals
+  - name: People
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: token
+
+  schemas:
+    # ---------------- Common ----------------
+    ApiMeta:
+      type: object
+      additionalProperties: true
+      example: {}
+
+    ApiError:
+      type: object
+      required: [ok, error, data]
+      properties:
+        ok: { type: boolean, example: false }
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { type: string, example: "AUTH_INVALID" }
+            message: { type: string, example: "Token غير صالح/منتهي" }
+        data: { type: object, example: {} }
+
+    DateString:
+      type: string
+      format: date
+      example: "2026-02-25"
+
+    DateTimeString:
+      type: string
+      format: date-time
+      example: "2026-02-25T06:30:00Z"
+
+    IdName:
+      type: object
+      required: [id, name]
+      properties:
+        id: { type: integer, example: 12 }
+        name: { type: string, example: "Name" }
+
+    FalseOrIdName:
+      oneOf:
+        - $ref: "#/components/schemas/IdName"
+        - type: boolean
+          enum: [false]
+
+    # ---------------- Auth ----------------
+    LoginRequest:
+      type: object
+      required: [db, login, password]
+      properties:
+        db: { type: string, example: "Top_HR" }
+        login: { type: string, example: "portal@example.com" }
+        password: { type: string, example: "******" }
+
+    LoginResponseData:
+      type: object
+      required: [token, token_type, expires_at, user, employee]
+      properties:
+        token: { type: string, example: "UG5cRWs9xD..." }
+        token_type: { type: string, example: "Bearer" }
+        expires_at: { $ref: "#/components/schemas/DateTimeString" }
+        user:
+          type: object
+          required: [id, name, login]
+          properties:
+            id: { type: integer, example: 77 }
+            name: { type: string, example: "Portal User" }
+            login: { type: string, example: "portal@example.com" }
+        employee: { $ref: "#/components/schemas/IdName" }
+
+    ApiOk_Login:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/LoginResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    LogoutResponseData:
+      type: object
+      required: [revoked]
+      properties:
+        revoked: { type: boolean, example: true }
+
+    ApiOk_Logout:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/LogoutResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    # ---------------- Profile (Me) ----------------
+    MeResponseData:
+      type: object
+      required: [uid, login, name, partner, employee, roles]
+      properties:
+        uid: { type: integer, example: 77 }
+        login: { type: string, example: "portal@example.com" }
+        name: { type: string, example: "Portal User" }
+        partner:
+          type: object
+          required: [id, name]
+          properties:
+            id: { type: integer, example: 500 }
+            name: { type: string, example: "Portal Partner" }
+            email: { type: string, nullable: true, example: "portal@example.com" }
+            mobile: { type: string, nullable: true, example: "0770..." }
+            phone: { type: string, nullable: true, example: "01..." }
+        employee:
+          type: object
+          required: [id, name]
+          properties:
+            id: { type: integer, example: 12 }
+            name: { type: string, example: "Employee Name" }
+            barcode: { type: string, nullable: true, example: "123456" }
+            mobile_phone: { type: string, nullable: true }
+            work_phone: { type: string, nullable: true }
+            work_email: { type: string, nullable: true }
+            department_id: { $ref: "#/components/schemas/FalseOrIdName" }
+            job_id: { $ref: "#/components/schemas/FalseOrIdName" }
+            parent_id: { $ref: "#/components/schemas/FalseOrIdName" }
+            address_id: { $ref: "#/components/schemas/FalseOrIdName" }
+            resource_calendar_id: { $ref: "#/components/schemas/FalseOrIdName" }
+            department: { type: string, nullable: true }
+            job_title: { type: string, nullable: true }
+        roles:
+          type: object
+          properties:
+            is_hr_manager: { type: boolean, example: false }
+            is_line_manager: { type: boolean, example: true }
+            is_dept_manager: { type: boolean, example: false }
+            is_leave_type_responsible: { type: boolean, example: false }
+            subordinate_count: { type: integer, example: 5 }
+            is_manager_or_approver: { type: boolean, example: true }
+
+    ApiOk_Me:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/MeResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    # ---------------- Attendance ----------------
+    AttendanceMarkRequest:
+      type: object
+      properties:
+        
+        action: { type: string, example: "in", description: "in|out|checkin|checkout" }
+        mode: { type: string, example: "app", description: "app|manual|kiosk|systray" }
+        lat: { type: number, example: 32.559864 }
+        lng: { type: number, example: 44.026512 }
+        country_name: { type: string, example: "Iraq" }
+        ip: { type: string, example: "1.2.3.4" }
+        browser: { type: string, example: "Mozilla/5.0 ..." }
+        note: { type: string, example: "manual note" }
+        when: { type: string, example: "2026-02-25 10:15:00" }
+        token: { type: string, example: "idem-uuid-123" }
+        face_b64: { type: string, description: "Base64 or data URL", example: "data:image/jpeg;base64,/9j/..." }
+        face_in_b64: { type: string }
+        face_out_b64: { type: string }
+
+    AttendanceMarkAttendance:
+      type: object
+      properties:
+        id: { type: integer, example: 1001 }
+        employee_id: { type: integer, example: 12 }
+        check_in: { type: string, example: "2026-02-25 06:30:00" }
+        check_out: { type: string, nullable: true, example: null }
+        worked_hours: { type: number, example: 0.0 }
+        in_mode: { type: string, nullable: true }
+        out_mode: { type: string, nullable: true }
+        in_ip_address: { type: string, nullable: true }
+        out_ip_address: { type: string, nullable: true }
+        in_browser: { type: string, nullable: true }
+        out_browser: { type: string, nullable: true }
+        in_country_name: { type: string, nullable: true }
+        out_country_name: { type: string, nullable: true }
+        in_latitude: { type: number, nullable: true }
+        in_longitude: { type: number, nullable: true }
+        out_latitude: { type: number, nullable: true }
+        out_longitude: { type: number, nullable: true }
+
+    AttendanceMarkResponseData:
+      type: object
+      required: [action]
+      properties:
+        action: { type: string, example: "in" }
+        duplicate: { type: boolean, example: false }
+        attendance: { $ref: "#/components/schemas/AttendanceMarkAttendance" }
+
+    ApiOk_AttendanceMark:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/AttendanceMarkResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    AttendanceListRequest:
+      type: object
+      properties:
+        employee_id: { type: integer, example: 12 }
+        date_from: { type: string, example: "2026-02-01 00:00:00" }
+        date_to: { type: string, example: "2026-03-01 00:00:00" }
+
+    AttendanceActionItem:
+      type: object
+      required: [attendance_id, action, timestamp]
+      properties:
+        attendance_id: { type: integer, example: 1001 }
+        action: { type: string, example: "in" }
+        timestamp: { type: string, example: "2026-02-25T06:30:00Z" }
+        timestamp_local: { type: string, nullable: true, example: "2026-02-25T09:30:00+03:00" }
+        mode: { type: string, nullable: true }
+        lat: { type: number, nullable: true }
+        lng: { type: number, nullable: true }
+        ip: { type: string, nullable: true }
+        browser: { type: string, nullable: true }
+        country_name: { type: string, nullable: true }
+
+    AttendanceListResponseData:
+      type: object
+      required: [from, to, count, items]
+      properties:
+        from: { type: string, example: "2026-02-01T00:00:00Z" }
+        to: { type: string, example: "2026-03-01T00:00:00Z" }
+        count: { type: integer, example: 2 }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/AttendanceActionItem" }
+
+    ApiOk_AttendanceList:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/AttendanceListResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    # ---------------- Payslips ----------------
+    PayslipsListRequest:
+      type: object
+      properties:
+        employee_id: { type: integer, example: 12 }
+        year: { type: integer, example: 2026 }
+        month: { type: integer, example: 2 }
+        limit: { type: integer, example: 4 }
+
+    PayslipListItem:
+      type: object
+      properties:
+        id: { type: integer, example: 9001 }
+        name: { type: string, nullable: true, example: "Payslip - Feb 2026" }
+        date_from: { $ref: "#/components/schemas/DateString" }
+        date_to: { $ref: "#/components/schemas/DateString" }
+        state: { type: string, example: "done" }
+        net: { type: number, nullable: true, example: 1200.0 }
+        gross: { type: number, nullable: true, example: 1500.0 }
+
+    PayslipsListResponseData:
+      type: object
+      required: [count, items]
+      properties:
+        count: { type: integer, example: 1 }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/PayslipListItem" }
+        totals:
+          type: object
+          additionalProperties: true
+          example: { net: 1200.0, gross: 1500.0 }
+
+    ApiOk_PayslipsList:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/PayslipsListResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    PayslipDetailRequest:
+      type: object
+      required: [slip_id]
+      properties:
+        slip_id: { type: integer, example: 9001 }
+
+    PayslipLine:
+      type: object
+      properties:
+        code: { type: string, example: "BASIC" }
+        name: { type: string, example: "Basic Salary" }
+        category: { type: string, nullable: true, example: "BASIC" }
+        amount: { type: number, example: 1000.0 }
+        quantity: { type: number, nullable: true, example: 1.0 }
+        total: { type: number, example: 1000.0 }
+
+    PayslipDetailResponseData:
+      type: object
+      required: [slip]
+      properties:
+        slip:
+          type: object
+          properties:
+            id: { type: integer, example: 9001 }
+            name: { type: string, example: "Payslip - Feb 2026" }
+            date_from: { $ref: "#/components/schemas/DateString" }
+            date_to: { $ref: "#/components/schemas/DateString" }
+            state: { type: string, example: "done" }
+        lines:
+          type: array
+          items: { $ref: "#/components/schemas/PayslipLine" }
+        totals:
+          type: object
+          additionalProperties: true
+          example: { net: 1200.0, gross: 1500.0, deductions: 300.0 }
+
+    ApiOk_PayslipDetail:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/PayslipDetailResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    # ---------------- Leaves ----------------
+    LeaveTypesResponseData:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: integer, example: 3 }
+              name: { type: string, example: "Annual Leave" }
+              balance_days: { type: number, nullable: true, example: 12.0 }
+              can_request: { type: boolean, example: true }
+              request_unit: { type: string, nullable: true, example: "day" }
+              requires_allocation: { type: boolean, nullable: true, example: false }
+
+    ApiOk_LeaveTypes:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/LeaveTypesResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    LeaveSummaryRequest:
+      type: object
+      properties:
+        employee_id: { type: integer, example: 12 }
+
+    LeaveSummaryResponseData:
+      type: object
+      properties:
+        employee_id: { type: integer, example: 12 }
+        remaining_days: { type: number, nullable: true, example: 12.0 }
+        hourly_balance: { type: number, nullable: true, example: 6.5 }
+        flex_minutes: { type: integer, nullable: true, example: 90 }
+
+    ApiOk_LeaveSummary:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/LeaveSummaryResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    LeaveListRequest:
+      type: object
+      properties:
+        employee_id: { type: integer, example: 12 }
+        states:
+          type: array
+          items: { type: string }
+          example: ["confirm","validate"]
+        date_from: { $ref: "#/components/schemas/DateString" }
+        date_to: { $ref: "#/components/schemas/DateString" }
+        latest: { type: integer, example: 10 }
+        include_pending: { type: boolean, example: true }
+
+    LeaveListItem:
+      type: object
+      properties:
+        id: { type: integer, example: 501 }
+        name: { type: string, example: "طلب إجازة" }
+        state: { type: string, example: "confirm" }
+        leave_type_id: { type: integer, example: 3 }
+        leave_type_name: { type: string, example: "Annual Leave" }
+        date_from: { $ref: "#/components/schemas/DateString" }
+        date_to: { $ref: "#/components/schemas/DateString" }
+        number_of_days: { type: number, example: 2.0 }
+        can_approve: { type: boolean, nullable: true, example: false }
+        approval_route:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: integer, example: 77 }
+              name: { type: string, example: "Approver Name" }
+              state: { type: string, nullable: true, example: "pending" }
+
+    LeaveListResponseData:
+      type: object
+      required: [count, items]
+      properties:
+        count: { type: integer, example: 1 }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/LeaveListItem" }
+
+    ApiOk_LeaveList:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/LeaveListResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    LeaveDetailRequest:
+      type: object
+      required: [leave_id]
+      properties:
+        leave_id: { type: integer, example: 501 }
+
+    LeaveDetailResponseData:
+      type: object
+      properties:
+        id: { type: integer, example: 501 }
+        name: { type: string, example: "طلب إجازة" }
+        state: { type: string, example: "confirm" }
+        leave_type: { $ref: "#/components/schemas/IdName" }
+        date_from: { $ref: "#/components/schemas/DateString" }
+        date_to: { $ref: "#/components/schemas/DateString" }
+        number_of_days: { type: number, example: 2.0 }
+        description: { type: string, nullable: true }
+        employee: { $ref: "#/components/schemas/IdName" }
+        approvers:
+          type: array
+          items: { $ref: "#/components/schemas/IdName" }
+
+    ApiOk_LeaveDetail:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/LeaveDetailResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    LeaveHistoryRequest:
+      type: object
+      properties:
+        employee_id: { type: integer, example: 12 }
+        latest: { type: integer, example: 50 }
+
+    LeaveHistoryResponseData:
+      type: object
+      required: [count, items]
+      properties:
+        count: { type: integer, example: 10 }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/LeaveListItem" }
+
+    ApiOk_LeaveHistory:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/LeaveHistoryResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    LeaveCreateRequest:
+      type: object
+      required: [leave_type_id, date_from, date_to]
+      properties:
+        leave_type_id: { type: integer, example: 3 }
+        employee_id: { type: integer, example: 12 }
+        date_from: { $ref: "#/components/schemas/DateString" }
+        date_to: { $ref: "#/components/schemas/DateString" }
+        description: { type: string, example: "طلب إجازة" }
+        auto_submit: { type: boolean, example: true }
+        request_hour_from: { type: number, example: 9.0 }
+        request_hour_to: { type: number, example: 12.5 }
+
+    LeaveCreateResponseData:
+      type: object
+      required: [id, state]
+      properties:
+        id: { type: integer, example: 501 }
+        state: { type: string, example: "confirm" }
+
+    ApiOk_LeaveCreate:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/LeaveCreateResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    # ---------------- Approvals ----------------
+    ApprovalsEmployeesResponseData:
+      type: object
+      properties:
+        managed:
+          type: array
+          items: { $ref: "#/components/schemas/IdName" }
+        waiting_for_me:
+          type: array
+          items: { $ref: "#/components/schemas/IdName" }
+
+    ApiOk_ApprovalsEmployees:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/ApprovalsEmployeesResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    ApprovalsListRequest:
+      type: object
+      properties:
+        scope: { type: string, example: "for_me", description: "for_me|team" }
+        employee_id: { type: integer, example: 12 }
+        states:
+          type: array
+          items: { type: string }
+        date_from: { $ref: "#/components/schemas/DateString" }
+        date_to: { $ref: "#/components/schemas/DateString" }
+        latest: { type: integer, example: 300 }
+
+    ApprovalsListResponseData:
+      type: object
+      required: [count, items]
+      properties:
+        count: { type: integer, example: 1 }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/LeaveListItem" }
+
+    ApiOk_ApprovalsList:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/ApprovalsListResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    LeaveApproveRequest:
+      type: object
+      required: [leave_id]
+      properties:
+        leave_id: { type: integer, example: 501 }
+
+    LeaveApproveResponseData:
+      type: object
+      properties:
+        id: { type: integer, example: 501 }
+        state: { type: string, example: "validate" }
+
+    ApiOk_LeaveApprove:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/LeaveApproveResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    LeaveRefuseRequest:
+      type: object
+      required: [leave_id]
+      properties:
+        leave_id: { type: integer, example: 501 }
+        reason: { type: string, example: "مرفوض بسبب..." }
+
+    LeaveRefuseResponseData:
+      type: object
+      properties:
+        id: { type: integer, example: 501 }
+        state: { type: string, example: "refuse" }
+
+    ApiOk_LeaveRefuse:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/LeaveRefuseResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    LeaveHRListRequest:
+      type: object
+      properties:
+        only_pending: { type: boolean, example: true }
+        states:
+          type: array
+          items: { type: string }
+        date_from: { $ref: "#/components/schemas/DateString" }
+        date_to: { $ref: "#/components/schemas/DateString" }
+        latest: { type: integer, example: 300 }
+
+    LeaveHRListResponseData:
+      type: object
+      required: [count, items]
+      properties:
+        count: { type: integer, example: 10 }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/LeaveListItem" }
+
+    ApiOk_LeaveHRList:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/LeaveHRListResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+    # ---------------- People ----------------
+    CelebrationsRequest:
+      type: object
+      properties:
+        on: { $ref: "#/components/schemas/DateString" }
+
+    CelebrationItem:
+      type: object
+      properties:
+        employee: { $ref: "#/components/schemas/IdName" }
+        type: { type: string, example: "birthday", description: "birthday|anniversary" }
+        date: { $ref: "#/components/schemas/DateString" }
+        years: { type: integer, nullable: true, example: 3 }
+
+    CelebrationsResponseData:
+      type: object
+      required: [count, items]
+      properties:
+        count: { type: integer, example: 2 }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/CelebrationItem" }
+
+    ApiOk_Celebrations:
+      type: object
+      required: [ok, data, meta]
+      properties:
+        ok: { type: boolean, example: true }
+        data: { $ref: "#/components/schemas/CelebrationsResponseData" }
+        meta: { $ref: "#/components/schemas/ApiMeta" }
+
+paths:
+  /api/docs/openapi:
+    get:
+      tags: [Docs]
+      summary: "Download OpenAPI YAML"
+      responses:
+        "200":
+          description: "OpenAPI YAML"
+          content:
+            application/yaml:
+              schema: { type: string }
+
+  # ---------------- Auth ----------------
+  /fkhr/api/auth/login:
+    post:
+      tags: [Auth]
+      summary: "Login (Portal) -> Bearer token"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LoginRequest" }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_Login" }
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  /fkhr/api/auth/logout:
+    post:
+      tags: [Auth]
+      summary: "Logout (revoke current Bearer token)"
+      security: [{ BearerAuth: [] }]
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_Logout" }
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  # ---------------- Profile ----------------
+  /fkhr/api/me:
+    post:
+      tags: [Profile]
+      summary: "Profile + roles + employee details"
+      security: [{ BearerAuth: [] }]
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_Me" }
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  # ---------------- Attendance ----------------
+  /fkhr/api/attendance/mark_:
+    post:
+      tags: [Attendance]
+      summary: "Attendance mark (in/out) + geofence + idempotency + face images"
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AttendanceMarkRequest" }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_AttendanceMark" }
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  /fkhr/api/attendance/list:
+    post:
+      tags: [Attendance]
+      summary: "Attendance list (actions in/out) by date range"
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AttendanceListRequest" }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_AttendanceList" }
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  # ---------------- Payslips ----------------
+  /fkhr/api/payslips/list:
+    post:
+      tags: [Payslips]
+      summary: "Payslips list + totals"
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PayslipsListRequest" }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_PayslipsList" }
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  /fkhr/api/payslips/detail:
+    post:
+      tags: [Payslips]
+      summary: "Payslip detail (lines + totals)"
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PayslipDetailRequest" }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_PayslipDetail" }
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  # ---------------- Leaves ----------------
+  /fkhr/api/leave/types:
+    post:
+      tags: [Leaves]
+      summary: "Leave types + balance + request rules"
+      security: [{ BearerAuth: [] }]
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_LeaveTypes" }
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  /fkhr/api/leave/summary:
+    post:
+      tags: [Leaves]
+      summary: "Summary (remaining days + hourly balance + flex minutes)"
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LeaveSummaryRequest" }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_LeaveSummary" }
+
+  /fkhr/api/leave/list:
+    post:
+      tags: [Leaves]
+      summary: "Leave list (smart latest + include pending) + approval route"
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LeaveListRequest" }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_LeaveList" }
+
+  /fkhr/api/leave/detail:
+    post:
+      tags: [Leaves]
+      summary: "Leave detail"
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LeaveDetailRequest" }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_LeaveDetail" }
+
+  /fkhr/api/leave/history:
+    post:
+      tags: [Leaves]
+      summary: "Leave history by employee"
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LeaveHistoryRequest" }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_LeaveHistory" }
+
+  /fkhr/api/leave/create_:
+    post:
+      tags: [Leaves]
+      summary: "Create leave (days/hours) "
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LeaveCreateRequest" }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_LeaveCreate" }
+
+  # ---------------- Approvals ----------------
+  /fkhr/api/leave/approvals/employees:
+    post:
+      tags: [Approvals]
+      summary: "Approvals employees (managed + waiting for me)"
+      security: [{ BearerAuth: [] }]
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_ApprovalsEmployees" }
+
+  /fkhr/api/leave/approvals/list:
+    post:
+      tags: [Approvals]
+      summary: "Approvals list (for_me/team)"
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ApprovalsListRequest" }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_ApprovalsList" }
+
+  /fkhr/api/leave/approve:
+    post:
+      tags: [Approvals]
+      summary: "Approve leave (current approver only)"
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LeaveApproveRequest" }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_LeaveApprove" }
+
+  /fkhr/api/leave/refuse:
+    post:
+      tags: [Approvals]
+      summary: "Refuse leave (current approver only)"
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LeaveRefuseRequest" }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_LeaveRefuse" }
+
+  /fkhr/api/leave/hr/list:
+    post:
+      tags: [Approvals]
+      summary: "HR list (all leaves except mine)"
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LeaveHRListRequest" }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_LeaveHRList" }
+
+  # ---------------- People ----------------
+  /fkhr/api/employees/celebrations:
+    post:
+      tags: [People]
+      summary: "Celebrations (birthdays + anniversaries)"
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CelebrationsRequest" }
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiOk_Celebrations" }
